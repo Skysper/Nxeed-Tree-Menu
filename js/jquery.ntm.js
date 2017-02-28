@@ -1,25 +1,52 @@
 /* jQuery Nxeed's Tree Menu v1 | (c) 2014 Nxeed | https://github.com/nxeed */
-
+/* jQuery Nxeed's Tree Menu v2 | (c) 2017 Skysper | https://github.com/Skysper */
 (function($) {
     var defaults = {
         autoParentDetection: true,
         autoActiveDetection: true,
         itemsUniqueClasses: true,
+        itemsExpandAll:true,
         parentClass: 'parent',
         activeClass: 'active',
         selectedClass: 'selected',
         expandClass: 'opened',
         collapseClass: 'closed',
-        spoilerButtonClickMinX: 4,
-        spoilerButtonClickMaxX: 20,
-        spoilerButtonClickMinY: 8,
-        spoilerButtonClickMaxY: 24,
+        // spoilerButtonClickMinX: 4,
+        // spoilerButtonClickMaxX: 20,
+        // spoilerButtonClickMinY: 8,
+        // spoilerButtonClickMaxY: 24,
         slideEffect: true
     };
 
     var methods = {
         init: function(params) {
             var options = $.extend({}, defaults, params);
+            function initElements(parent,data)
+            {
+                $.each(data,function(index,ele){
+                    var li=$("<li></li>");
+                    parent.append(li);
+                    var a = $('<a href="#" data-value="'+ele.value+'">'+ele.name+'</a>');
+                    if(options.itemsExpandAll || ele.expand)
+                    {
+                        $(a).addClass(options.selectedClass);
+                    }
+                    li.append(a);
+                    if(ele.nodes&&ele.nodes.length>0)
+                    {
+                        var ul = $("<ul></ul>");
+                        initElements(ul,ele.nodes);
+                        li.append(ul);
+                    }
+                });
+            }
+
+            if(options.data)
+            {
+              var ul = $("<ul></ul>");
+              initElements(ul,options.data);
+              this.append(ul);
+            }
 
             var items = this.find('li');
 
@@ -42,45 +69,44 @@
 
             $.each(parents, function(num, parent) {
                 parent = $(parent);
+                var child=parent.children("a");
+                child.addClass(options.collapseClass);
 
-                parent.addClass(options.collapseClass);
-
-                if (parent.has('.' + options.selectedClass)[0]) {
-                    parent.removeClass(options.collapseClass).addClass(options.expandClass);
+                if (child.has('.' + options.selectedClass)[0]) {
+                    child.removeClass(options.collapseClass).addClass(options.expandClass);
 
                     if (options.autoActiveDetection) {
-                        parent.addClass(options.activeClass);
+                        child.addClass(options.activeClass);
                     }
                 }
 
-                if (parent.hasClass(options.selectedClass)) {
-                    parent.removeClass(options.activeClass).removeClass(options.collapseClass).addClass(options.expandClass);
+                if (child.hasClass(options.selectedClass)) {
+                    child.removeClass(options.activeClass).removeClass(options.collapseClass).addClass(options.expandClass);
                 }
             });
 
-            $('.' + options.collapseClass + ' > ul', this).hide();
+            var parent = $('.' + options.collapseClass,this).parent();
+            //console.log(parent);
+            parent.children('ul').hide();
 
-            $('.' + options.parentClass + ' > a', this).click(function(e) {
-                var posX = $(this).offset().left;
-                var posY = $(this).offset().top;
-
-                var clickX = e.pageX - posX;
-                var clickY = e.pageY - posY;
-
-                if (clickX <= options.spoilerButtonClickMaxX && clickX >= options.spoilerButtonClickMinX && clickY <= options.spoilerButtonClickMaxY && clickY >= options.spoilerButtonClickMinY) {
+            this.find('a').click(function(e) {
                     var item = $(this).parent('li');
                     var content = $(this).parent('li').children('ul');
+                    if(item.hasClass(options.parentClass))
+                    {
+                      $(this).toggleClass(options.expandClass).toggleClass(options.collapseClass);
 
-                    item.toggleClass(options.expandClass).toggleClass(options.collapseClass);
-
-                    if (options.slideEffect) {
-                        content.slideToggle();
-                    } else {
-                        content.toggle();
-                    }
-
-                    e.preventDefault();
-                }
+                      if (options.slideEffect) {
+                          content.slideToggle();
+                      } else {
+                          content.toggle();
+                      }
+                   }else{
+                     if(options.selected){
+                        options.selected($(this).attr('data-value'));
+                     }
+                   }
+                   e.preventDefault();
             });
         }
     };
@@ -91,7 +117,7 @@
         } else if (typeof method === 'object' || !method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error('Метод "' + method + '" не найден в плагине jQuery.ntm');
+            $.error('插件jQuery.ntm中不存在方法 "' + method + '"');
         }
     };
 })(jQuery);

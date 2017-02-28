@@ -35,34 +35,34 @@
 }
 
 
-.ntm-default .active > a:hover,
-.ntm-default .selected > a,
+.ntm-default li.parent > .active:hover,
+.ntm-default li.parent > .selected,
 .ntm-default a:hover {
     background-color: #c6cdde;
 }
 
-.ntm-default .selected > a {
+.ntm-default li.parent > .selected {
     color: #f53d3e;
     font-weight: bold;
     text-decoration: none;
 }
 
-.ntm-default .active > a {
+.ntm-default li.parent > .active {
     background-color: #e1e3e9;
 }
 
-.ntm-default .closed > a,
-.ntm-default .opened > a {
+.ntm-default li.parent > a.closed ,
+.ntm-default li.parent > a.opened {
     padding-left: 24px;
     background-position: 4px 8px;
     background-repeat: no-repeat;
 }
 
-.ntm-default .closed > a {
+.ntm-default li.parent > a.closed {
     background-image: url(../img/icon-expand.gif);
 
 }
 
-.ntm-default .opened > a {
+.ntm-default li.parent > a.opened {
     background-image: url(../img/icon-collapse.gif);
 }
