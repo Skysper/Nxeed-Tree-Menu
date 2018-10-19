@@ -76,6 +76,9 @@
                 nodes:[{name:"乌龟",value:8}]}]},
                 ];
             $(document).ready(function() {
+			    $.get('http://localhost:5233/Article/Categories',null,function(data){
+				   console.log(data);
+				});
                 $('.menu').ntm({"data":data,selected:function(value){console.log(value)}});
             });
         </script>

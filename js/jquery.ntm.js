@@ -15,6 +15,9 @@
         // spoilerButtonClickMaxX: 20,
         // spoilerButtonClickMinY: 8,
         // spoilerButtonClickMaxY: 24,
+        idProperty:"value",
+        nameProperty:"name",
+        nodesProperty:"nodes",
         slideEffect: true
     };
 
@@ -26,16 +29,16 @@
                 $.each(data,function(index,ele){
                     var li=$("<li></li>");
                     parent.append(li);
-                    var a = $('<a href="#" data-value="'+ele.value+'">'+ele.name+'</a>');
+                    var a = $('<a href="#" data-value="'+ele[options.idProperty]+'">'+ele[options.nameProperty]+'</a>');
                     if(options.itemsExpandAll || ele.expand)
                     {
                         $(a).addClass(options.selectedClass);
                     }
                     li.append(a);
-                    if(ele.nodes&&ele.nodes.length>0)
+                    if(ele[options.nodesProperty]&&ele[options.nodesProperty].length>0)
                     {
                         var ul = $("<ul></ul>");
-                        initElements(ul,ele.nodes);
+                        initElements(ul,ele[options.nodesProperty]);
                         li.append(ul);
                     }
                 });
@@ -103,7 +106,7 @@
                       }
                    }else{
                      if(options.selected){
-                        options.selected($(this).attr('data-value'));
+                        options.selected($(this).attr('data-value'),$(this).text());
                      }
                    }
                    e.preventDefault();
